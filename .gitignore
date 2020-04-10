@@ -1,0 +1,4 @@
+.vscode
+__pychace__
+node_modules
+*env
