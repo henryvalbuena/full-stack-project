@@ -37,7 +37,7 @@ def get_drinks():
 
         return jsonify({"drinks": drinks})
     except:
-        # Expected to be a database error of some sort, since there's not much done here.
+        # If there's a database error.
         abort(500)
 
 
@@ -54,9 +54,13 @@ def get_drinks():
 @app.route("/drinks-detail")
 @requires_auth(permission="get:drinks-detail")
 def get_drinks_detail(jwt):
-    drinks = [_.long() for _ in Drink.query.all()]
+    try:
+        drinks = [_.long() for _ in Drink.query.all()]
 
-    return jsonify({"success": True, "drinks": drinks})
+        return jsonify({"success": True, "drinks": drinks})
+    except:
+        # If there's a database error.
+        abort(500)
 
 
 """
@@ -73,12 +77,16 @@ def get_drinks_detail(jwt):
 @app.route("/drinks", methods=["POST"])
 @requires_auth(permission="post:drinks")
 def create_drinks(jwt):
-    drink = Drink(
-        title=request.json["title"], recipe=json.dumps(request.json["recipe"])
-    )
-    drink.insert()
+    try:
+        drink = Drink(
+            title=request.json["title"], recipe=json.dumps(request.json["recipe"])
+        )
+        drink.insert()
 
-    return jsonify({"success": True, "drinks": [drink.long()]})
+        return jsonify({"success": True, "drinks": [drink.long()]})
+    except:
+        # If the payload is malformed.
+        abort(400)
 
 
 """
@@ -97,12 +105,18 @@ def create_drinks(jwt):
 @app.route("/drinks/<int:drink_id>", methods=["PATCH"])
 @requires_auth(permission="patch:drinks")
 def update_drink(jwt, drink_id):
-    drink = Drink.query.filter(Drink.id == drink_id).first()
-    drink.title = request.json["title"]
-    drink.recipe = json.dumps(request.json["recipe"])
-    drink.update()
+    try:
+        drink = Drink.query.filter(Drink.id == drink_id).first()
+        if "title" in request.json:
+            drink.title = request.json["title"]
+        if "recipe" in request.json:
+            drink.recipe = json.dumps(request.json["recipe"])
+        drink.update()
 
-    return jsonify({"success": True, "drinks": [drink.long()]})
+        return jsonify({"success": True, "drinks": [drink.long()]})
+    except:
+        # If the payload is malformed.
+        abort(400)
 
 
 """
@@ -120,10 +134,14 @@ def update_drink(jwt, drink_id):
 @app.route("/drinks/<int:drink_id>", methods=["DELETE"])
 @requires_auth(permission="delete:drinks")
 def remove_drink(jwt, drink_id):
-    drink = Drink.query.filter(Drink.id == drink_id).first()
-    drink.delete()
+    try:
+        drink = Drink.query.filter(Drink.id == drink_id).first()
+        drink.delete()
 
-    return jsonify({"success": True, "delete": drink_id})
+        return jsonify({"success": True, "delete": drink_id})
+    except:
+        # If the id does not match any drink in the database.
+        abort(400)
 
 
 ## Error Handling
@@ -179,3 +197,13 @@ def unprocessable(error):
         ),
         error.status_code,
     )
+
+
+@app.errorhandler(500)
+def unprocessable(error):
+    return jsonify({"success": False, "error": 500, "message": "Server error"}), 500
+
+
+@app.errorhandler(400)
+def unprocessable(error):
+    return jsonify({"success": False, "error": 400, "message": "Bad request"}), 400

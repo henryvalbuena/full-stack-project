@@ -38,7 +38,7 @@ def get_token_auth_header():
     if "Authorization" not in request.headers:
         raise AuthError(
             {"code": "invalid_header", "description": "Missing mandatory headers.",},
-            400,
+            401,
         )
 
     auth_header = request.headers["Authorization"]
@@ -50,7 +50,7 @@ def get_token_auth_header():
                 "code": "invalid_header",
                 "description": "Missing authorization elements.",
             },
-            400,
+            401,
         )
     elif header_parts[0].lower() != "bearer":
         raise AuthError(
@@ -58,7 +58,7 @@ def get_token_auth_header():
                 "code": "invalid_header",
                 "description": "Unable to find appropiate keywords.",
             },
-            400,
+            401,
         )
 
     return header_parts[1]
@@ -80,13 +80,13 @@ def get_token_auth_header():
 def check_permissions(permission, payload):
     if "permissions" not in payload:
         raise AuthError(
-            {"code": "bad_request", "description": "Missing mandatory key.",}, 400
+            {"code": "invalid_header", "description": "Missing mandatory key.",}, 401
         )
 
     if permission not in payload["permissions"]:
         raise AuthError(
-            {"code": "forbidden", "description": "User don't have access to resouce.",},
-            403,
+            {"code": "Unauthorized", "description": "User don't have access to resource.",},
+            401,
         )
     return True
 
@@ -120,7 +120,7 @@ def verify_decode_jwt(token):
                 "code": "invalid_header",
                 "description": "Malformed header value.",
             },
-            400,
+            401,
         )
 
     # Choose our key
