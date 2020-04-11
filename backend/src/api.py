@@ -7,6 +7,7 @@ from flask_cors import CORS
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
 
+
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
@@ -31,9 +32,13 @@ CORS(app)
 
 @app.route("/drinks")
 def get_drinks():
-    drinks = [_.short() for _ in Drink.query.all()]
+    try:
+        drinks = [_.short() for _ in Drink.query.all()]
 
-    return jsonify({"drinks": drinks})
+        return jsonify({"drinks": drinks})
+    except:
+        # Expected to be a database error of some sort, since there's not much done here.
+        abort(500)
 
 
 """
@@ -47,7 +52,8 @@ def get_drinks():
 
 
 @app.route("/drinks-detail")
-def get_drinks_detail():
+@requires_auth(permission="get:drinks-detail")
+def get_drinks_detail(jwt):
     drinks = [_.long() for _ in Drink.query.all()]
 
     return jsonify({"success": True, "drinks": drinks})
@@ -65,10 +71,10 @@ def get_drinks_detail():
 
 
 @app.route("/drinks", methods=["POST"])
-def create_drinks():
+@requires_auth(permission="post:drinks")
+def create_drinks(jwt):
     drink = Drink(
-        title=request.json["title"],
-        recipe=json.dumps(request.json["recipe"])
+        title=request.json["title"], recipe=json.dumps(request.json["recipe"])
     )
     drink.insert()
 
@@ -89,7 +95,8 @@ def create_drinks():
 
 
 @app.route("/drinks/<int:drink_id>", methods=["PATCH"])
-def update_drink(drink_id):
+@requires_auth(permission="patch:drinks")
+def update_drink(jwt, drink_id):
     drink = Drink.query.filter(Drink.id == drink_id).first()
     drink.title = request.json["title"]
     drink.recipe = json.dumps(request.json["recipe"])
@@ -111,7 +118,8 @@ def update_drink(drink_id):
 
 
 @app.route("/drinks/<int:drink_id>", methods=["DELETE"])
-def remove_drink(drink_id):
+@requires_auth(permission="delete:drinks")
+def remove_drink(jwt, drink_id):
     drink = Drink.query.filter(Drink.id == drink_id).first()
     drink.delete()
 
@@ -140,13 +148,34 @@ def unprocessable(error):
 
 """
 
+
+@app.errorhandler(401)
+def unprocessable(error):
+    return jsonify({"success": False, "error": 401, "message": "Unauthorized"}), 401
+
+
 """
 @TODO implement error handler for 404
     error handler should conform to general task above 
 """
 
 
+@app.errorhandler(404)
+def unprocessable(error):
+    return jsonify({"success": False, "error": 404, "message": "Not found"}), 404
+
+
 """
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 """
+
+
+@app.errorhandler(AuthError)
+def unprocessable(error):
+    return (
+        jsonify(
+            {"success": False, "error": error.status_code, "message": error.error,}
+        ),
+        error.status_code,
+    )
