@@ -4,13 +4,13 @@ from sqlalchemy import exc
 import json
 from flask_cors import CORS
 
-from .database.models import db_drop_and_create_all, setup_db, Drink
-from .auth.auth import AuthError, requires_auth
+from database.models import db_drop_and_create_all, setup_db, Drink
+from auth.auth import AuthError, requires_auth
 
 
 app = Flask(__name__)
 setup_db(app)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 """
 @TODO uncomment the following line to initialize the datbase
@@ -30,7 +30,7 @@ CORS(app)
 """
 
 
-@app.route("/drinks")
+@app.route("/api/drinks")
 def get_drinks():
     try:
         drinks = [_.short() for _ in Drink.query.all()]
@@ -51,7 +51,7 @@ def get_drinks():
 """
 
 
-@app.route("/drinks-detail")
+@app.route("/api/drinks-detail")
 @requires_auth(permission="get:drinks-detail")
 def get_drinks_detail(jwt):
     try:
@@ -74,7 +74,7 @@ def get_drinks_detail(jwt):
 """
 
 
-@app.route("/drinks", methods=["POST"])
+@app.route("/api/drinks", methods=["POST"])
 @requires_auth(permission="post:drinks")
 def create_drinks(jwt):
     try:
@@ -102,7 +102,7 @@ def create_drinks(jwt):
 """
 
 
-@app.route("/drinks/<int:drink_id>", methods=["PATCH"])
+@app.route("/api/drinks/<int:drink_id>", methods=["PATCH"])
 @requires_auth(permission="patch:drinks")
 def update_drink(jwt, drink_id):
     try:
@@ -131,7 +131,7 @@ def update_drink(jwt, drink_id):
 """
 
 
-@app.route("/drinks/<int:drink_id>", methods=["DELETE"])
+@app.route("/api/drinks/<int:drink_id>", methods=["DELETE"])
 @requires_auth(permission="delete:drinks")
 def remove_drink(jwt, drink_id):
     try:
