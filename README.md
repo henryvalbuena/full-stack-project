@@ -1,5 +1,7 @@
 # Coffee Shop Full Stack
 
+[Demo](https://still-woodland-01330.herokuapp.com/tabs/drink-menu)
+
 ## Full Stack Nano - IAM Final Project
 
 Udacity has decided to open a new digitally enabled cafe for students to order drinks, socialize, and study hard. But they need help setting up their menu experience.
@@ -20,23 +22,17 @@ You have been called on to demonstrate your newly learned skills to create a ful
 - `docker-compose up`
 - After docker finishes you should be able to navigate to `localhost:8080`
 
-### Development instructions
+### Constraints
 
-There are `@TODO` comments throughout the project. We recommend tackling the sections in order. Start by reading the READMEs in:
+- The app is setup with a predifined Auth0 configuration
+- You will need to have permissions enabled to create or modify existing drinks
 
-1. [`./backend/`](./backend/README.md)
-2. [`./frontend/`](./frontend/README.md)
+If you want to change this behavious with your own settings check `./frontend/src/environments` to changes the environment variables.
 
-## About the Stack
+### Account Permissions
 
-### Backend
+If you have created an account using the implemented flow to try the rest of the app, you can open an issue on this repo and provide the username and email used so I can grant access to the account.
 
-The `./backend` directory contains a partially completed Flask server with a pre-written SQLAlchemy module to simplify your data needs. You will need to complete the required endpoints, configure, and integrate Auth0 for authentication.
+## Author
 
-[View the README.md within ./backend for more details.](./backend/README.md)
-
-### Frontend
-
-The `./frontend` directory contains a complete Ionic frontend to consume the data from the Flask server. You will only need to update the environment variables found within (./frontend/src/environment/environment.ts) to reflect the Auth0 configuration details set up for the backend app. 
-
-[View the README.md within ./frontend for more details.](./frontend/README.md)
+Henry Valbuena
