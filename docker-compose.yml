@@ -3,22 +3,16 @@ services:
   nginx:
       image: nginx
       container_name: 'nginx'
+      hostname: localhosts
       depends_on:
-        - frontend
         - backend
       links:
         - backend
       volumes:
-        - ./frontend/src/app/services:/usr/share/nginx/html
-        - ./nginx.conf:/etc/nginx/nginx.conf
+        - ./frontend/www:/var/www/html
+        - ./default.conf:/etc/nginx/conf.d/default.conf
       ports:
         - "8080:80"
-  frontend:
-    build:
-      context: ./frontend
-    container_name: "frontend-fs"
-    volumes:
-      - ./frontend/src/app/services:/app/www
   backend:
     build:
       context: ./backend
