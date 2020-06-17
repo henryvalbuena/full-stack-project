@@ -11,7 +11,16 @@ You have been called on to demonstrate your newly learned skills to create a ful
 3) Allow the shop baristas to see the recipe information.
 4) Allow the shop managers to create new drinks and edit existing drinks.
 
-## Tasks
+## Getting Started
+
+### Running the app locally
+
+- `git clone git@github.com:henryvalbuena/full-stack-project.git`
+- `cd full-stack-project`
+- `docker-compose up`
+- After docker finishes you should be able to navigate to `localhost:8080`
+
+### Development instructions
 
 There are `@TODO` comments throughout the project. We recommend tackling the sections in order. Start by reading the READMEs in:
 
@@ -19,8 +28,6 @@ There are `@TODO` comments throughout the project. We recommend tackling the sec
 2. [`./frontend/`](./frontend/README.md)
 
 ## About the Stack
-
-We started the full stack application for you. It is desiged with some key functional areas:
 
 ### Backend
 
