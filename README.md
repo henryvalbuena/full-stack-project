@@ -1,7 +1,9 @@
 # Coffee Shop Full Stack
 
 > The frontend of this project has been remade with React.js. The live demo provided in this repo is only for a small preview of what was done. Although, the full-stack application using this framework can be run locally following the steps below.
+
 [Small demo using Angular (missing features)](https://still-woodland-01330.herokuapp.com/tabs/drink-menu)
+
 [Full demo using React](http://henryis.me/latte-machine/)
 
 ![angular-app](https://github.com/henryvalbuena/full-stack-project/blob/master/frontend_angular.gif)
