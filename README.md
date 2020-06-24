@@ -4,7 +4,7 @@
 [Small demo using Angular (missing features)](https://still-woodland-01330.herokuapp.com/tabs/drink-menu)
 [Full demo using React](http://henryis.me/latte-machine/)
 
-![angular-app](https://github.com/henryvalbuena/full-stack-project/frontend_angular.gif)
+![angular-app](https://github.com/henryvalbuena/full-stack-project/blob/master/frontend_angular.gif)
 
 ## Full Stack Nano - IAM Final Project
 
